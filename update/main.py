@@ -21,13 +21,19 @@ async def root():
 
 @app.post("/update")
 async def update(param: schemas.MahasiswaBase = None, db: Session = Depends(get_db)):
-    db_mahasiswa = models.Mahasiswa(
-        npm = param.npm,
-        nama = param.nama
-    )
-    db.add(db_pengiriman)
-    db.commit()
-    db.refresh(db_mahasiswa)
+    res = db.query(models.Mahasiswa).filter(models.Mahasiswa.npm == param.npm).first()
+    if (res != None):
+        res.nama = param.nama
+        db.add(res)
+        db.commit()
+    else:
+        db_mahasiswa = models.Mahasiswa(
+            npm = param.npm,
+            nama = param.nama
+        )
+        db.add(db_mahasiswa)
+        db.commit()
+    
     return {
         "status": 'OK',
         'npm': param.npm,
