@@ -23,6 +23,10 @@ async def root():
 async def read(npm: str, db: Session = Depends(get_db)):
     return get_by_npm(npm, db)
 
+@app.get("/read/{npm}/{txid}")
+async def read(npm: str, txid: str, db: Session = Depends(get_db)):
+    return get_by_npm(npm, db)
+
 def get_by_npm(npm: str, db: Session = Depends(get_db)):
     res = db.query(models.Pengiriman).filter(models.Pengiriman.customer_id == npm).first()
     return {
